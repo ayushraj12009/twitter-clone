@@ -3,13 +3,16 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { navigationMenu } from "./NavigationMenu";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import { logout } from "../../Store/Auth/Action";
 
 const Navigation = () => {
+  const dispatch =useDispatch()
   const {auth} = useSelector(store=>store)
   const handleLogout = () => {
     console.log("logout");
     handleClose();
+    dispatch(logout())
   };
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -69,10 +72,28 @@ const Navigation = () => {
             alt="username"
             src="https://media.licdn.com/dms/image/D4D03AQF5UbVbymFLFw/profile-displayphoto-shrink_400_400/0/1695639706197?e=1701907200&v=beta&t=z6VkjoF7IRpfxmm_msomPzdBUMyKFKWh4dmieJkdM4o"
           />
-          <div>
-            <span>{auth.user?.fullName}</span>
-            <spam className="opacity-70">@{auth.user?.fullName.split(" ").join("_").toLowerCase()}</spam>
-          </div>
+          
+{/* <div>
+  <span>Test Twitter</span>
+    <span className="opacity-70">@test12009</span>
+</div> */}
+
+{/* <div>
+  <span>{auth.user?.fullName}</span>
+    <span className="opacity-70">@{auth.user?.fullName.split(" ").join("_").toLowerCase()}</span>
+</div> */}
+
+<div>
+  {auth.user && auth.user.fullName && (
+    <>
+      <p>{auth.user.fullName}</p>
+      <span className="opacity-70">@{auth.user.fullName.split(" ").join("_").toLowerCase()}</span>
+    </>
+  )}
+</div>
+
+
+
 
           <Button
             id="basic-button"

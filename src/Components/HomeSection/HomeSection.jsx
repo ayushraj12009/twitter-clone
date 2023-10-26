@@ -7,6 +7,9 @@ import { useState } from "react";
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import TagFacesIcon from '@mui/icons-material/TagFaces';
 import TweetCard from "./TweetCard";
+import {useDispatch} from 'react-redux';
+import { useEffect } from 'react';
+import { getAllTweets } from "../../Store/Twit/Action";
 
 const validationSchema = Yup.object().shape({
   content: Yup.string().required("Tweet text is required"),
@@ -15,10 +18,15 @@ const validationSchema = Yup.object().shape({
 const HomeSection = () => {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [selectImage, setSelectedImage] = useState("");
+  const dispatch = useDispatch();
 
   const handleSubmit = (values) => {
     console.log("values", values);
   };
+
+  useEffect(()=>{
+    dispatch(getAllTweets())
+  },[dispatch]) //  !! Important !! dispatch mere lagaya hua hai old code ko dekh kar
 
   const formik = useFormik({
     initialValues: {
