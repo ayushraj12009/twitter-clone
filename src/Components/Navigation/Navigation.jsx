@@ -41,7 +41,7 @@ const Navigation = () => {
               className="cursor-pointer flex space-x-3 item-center"
               onClick={() =>
                 item.title === "Profile"
-                  ? navigate("/profile/$(5)")
+                  ? navigate(`/profile/${auth.user?.id}`)
                   : navigate(item.path)
               }
             >
@@ -87,7 +87,7 @@ const Navigation = () => {
   {auth.user && auth.user.fullName && (
     <>
       <p>{auth.user.fullName}</p>
-      <span className="opacity-70">@{auth.user.fullName.split(" ").join("_").toLowerCase()}</span>
+      <span className="opacity-70">@{auth.user.fullName.split(" ").join("").toLowerCase()}</span>
     </>
   )}
 </div>

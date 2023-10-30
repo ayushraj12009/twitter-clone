@@ -5,6 +5,10 @@ import Modal from "@mui/material/Modal";
 import { useFormik } from "formik";
 import { Avatar, IconButton, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserProfile } from "../../Store/Auth/Action";
+import { uploadToCloudnary } from "../../Utils/uploadToCloudnary";
+
 
 const style = {
   position: "absolute",
@@ -25,31 +29,39 @@ export default function ProfileModal({open, handleClose}) {
   const [uploading, setUploading] = React.useState(false);
   // const handleOpen = () => setOpen(true);
   // const handleClose = () => setOpen(false);
-  
+  const dispatch = useDispatch();
+  const [selectedImage, setSelectedImage]=React.useState("");
+  const {auth} = useSelector(store=>store)
 
-  const handleSubmit = (values) => {
+
+   const handleSubmit = (values) => {
+    dispatch(updateUserProfile(values))
     console.log("handle submit", values);
+    setSelectedImage("")
   };
 
   const formik = useFormik({
     initialValues: {
-      fullName: "",
-      website: "",
-      location: "",
-      bio: "", 
+      fullName: auth.user?.fullName,
+      website: auth.user?.website,
+      location: auth.user?.location,
+      bio: auth.user.bio,
       backgroundImage: "",
       image: "",
     },
     onSubmit: handleSubmit,
   });
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     setUploading(true);
     const { name } = event.target;
-    const file = event.target.files[0];
+    const file = await uploadToCloudnary(event.target.files[0])
     formik.setFieldValue(name, file);
+    setSelectedImage(file);
     setUploading(false);
   };
+
+  console.log("auth",auth)
 
   return (
     <div>
@@ -98,7 +110,7 @@ export default function ProfileModal({open, handleClose}) {
                         height: "10rem",
                         border: "4px solid white",
                       }}
-                      src="https://media.licdn.com/dms/image/D4D03AQF5UbVbymFLFw/profile-displayphoto-shrink_400_400/0/1695639706197?e=1701907200&v=beta&t=z6VkjoF7IRpfxmm_msomPzdBUMyKFKWh4dmieJkdM4o"
+                      src={selectedImage || auth.user?.image || "https://media.licdn.com/dms/image/D4D03AQF5UbVbymFLFw/profile-displayphoto-shrink_400_400/0/1695639706197?e=1701907200&v=beta&t=z6VkjoF7IRpfxmm_msomPzdBUMyKFKWh4dmieJkdM4o"}
                     />
 
                     <input

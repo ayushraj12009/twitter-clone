@@ -1,5 +1,5 @@
 import { api } from "../../config/api"
-import { FIND_TWEET_BY_ID_FAILURE, FIND_TWEET_BY_ID_SUCCESS, GET_ALL_TWEETS_FAILURE, GET_ALL_TWEETS_REQUEST, GET_USERS_TWEET_SUCCESS, LIKE_TWEET_FAILURE, LIKE_TWEET_SUCCESS, REPLY_TWEET_FAILURE, REPLY_TWEET_SUCCESS, RETWEET_FAILURE, RETWEET_SUCCESS, TWEET_CREATE_FAILURE, TWEET_CREATE_SUCCESS, TWEET_DELETE_FAILURE, TWEET_DELETE_SUCCESS, USER_LIKE_TWEET_FAILURE, USER_LIKE_TWEET_SUCCESS } from "./ActionType";
+import { FIND_TWEET_BY_ID_FAILURE, FIND_TWEET_BY_ID_SUCCESS, GET_ALL_TWEETS_FAILURE, GET_ALL_TWEETS_SUCCESS, GET_USERS_TWEET_SUCCESS, LIKE_TWEET_FAILURE, LIKE_TWEET_SUCCESS, REPLY_TWEET_FAILURE, REPLY_TWEET_SUCCESS, RETWEET_FAILURE, RETWEET_SUCCESS, TWEET_CREATE_FAILURE, TWEET_CREATE_SUCCESS, TWEET_DELETE_FAILURE, TWEET_DELETE_SUCCESS, USER_LIKE_TWEET_FAILURE, USER_LIKE_TWEET_SUCCESS } from "./ActionType";
 
 
 // export const getAllTweets=(jwt = localStorage.getItem("jwt"))=>async(dispatch)=>{
@@ -13,7 +13,7 @@ export const getAllTweets=()=>async(dispatch)=>{
         // console.log("get all twits:", data)
         const {data} = await api.get("/api/twits");
         console.log("get all twits:", data)
-        dispatch({type:GET_ALL_TWEETS_REQUEST, payload:data})
+        dispatch({type:GET_ALL_TWEETS_SUCCESS, payload:data})
         // dispatch({type:GET_ALL_TWEETS_SUCCESS, payload:data})    
 
     } catch (error) {
@@ -79,7 +79,7 @@ export const createTweetReply=(tweetData)=>async(dispatch)=>{
 
 export const createReTweet=(twitId)=>async(dispatch)=>{
     try {
-        const {data} = await api.post(`/api/twits/${twitId}/retwit`);
+        const {data} = await api.put(`/api/twits/${twitId}/retwit`);
         console.log("Retweet:", data)
         dispatch({type:RETWEET_SUCCESS, payload:data})    
     } catch (error) {
@@ -90,7 +90,7 @@ export const createReTweet=(twitId)=>async(dispatch)=>{
 
 export const likeTweet=(twitId)=>async(dispatch)=>{
     try {
-        const {data} = await api.post(`/api/${twitId}/like`);
+        const {data} = await api.post(`/api/${twitId}/likes`);
         console.log("like tweet:", data)
         dispatch({type:LIKE_TWEET_SUCCESS, payload:data})    
     } catch (error) {

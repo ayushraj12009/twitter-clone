@@ -9,7 +9,9 @@ import TagFacesIcon from '@mui/icons-material/TagFaces';
 import TweetCard from "./TweetCard";
 import {useDispatch} from 'react-redux';
 import { useEffect } from 'react';
-import { getAllTweets } from "../../Store/Twit/Action";
+import { createTweet, getAllTweets } from "../../Store/Twit/Action";
+import {useSelector} from 'react-redux';
+import { uploadToCloudnary } from "../../Utils/uploadToCloudnary";
 
 const validationSchema = Yup.object().shape({
   content: Yup.string().required("Tweet text is required"),
@@ -19,27 +21,33 @@ const HomeSection = () => {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [selectImage, setSelectedImage] = useState("");
   const dispatch = useDispatch();
+  const {twit} = useSelector(store=>store);
+  console.log("twit", twit)
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, actions) => {
+    dispatch(createTweet(values))
+    actions.resetForm()
     console.log("values", values);
+    setSelectedImage("")
   };
 
   useEffect(()=>{
     dispatch(getAllTweets())
-  },[dispatch]) //  !! Important !! dispatch mere lagaya hua hai old code ko dekh kar
+  },[dispatch, twit.like, twit.retwit]) //  !! Important !! dispatch mere lagaya hua hai old code ko dekh kar
 
   const formik = useFormik({
     initialValues: {
       content: "",
       image: "",
+      isTweet:true
     },
     onSubmit: handleSubmit,
     validationSchema,
   });
 
-  const handleSelectImage = (event) => {
+  const handleSelectImage = async (event) => {
     setUploadingImage(true);
-    const imgUrl = event.target.files[0];
+    const imgUrl = await uploadToCloudnary(event.target.files[0])
     formik.setFieldValue("image", imgUrl);
     setSelectedImage(imgUrl);
     setUploadingImage(false);
@@ -66,12 +74,18 @@ const HomeSection = () => {
                   className={"border-none outline-none text-xl bg-transparent"}
                   {...formik.getFieldProps("content")}
                 />
-                {formik.errors.content &&
+                {/* {formik.errors.content &&
                   formik.touched.content(
                     <span className="text-red-500 ">
                       {formik.errors.content}
                     </span>
-                  )}
+                  )} */}
+                  {formik.errors.content && formik.touched.content && (
+  <span className="text-red-500">
+    {formik.errors.content}
+  </span>
+)}
+
               </div>
               {/* <div>
                           <img src="" alt="" />                      
@@ -107,12 +121,15 @@ const HomeSection = () => {
                 </div>
               </div>
             </form>
+            <div>
+              { selectImage && <img  src={selectImage} alt="" />}
+            </div>
           </div>
         </div>
       </section>
 
       <section>
-        {[1,1,1,1,1].map((item)=><TweetCard/>)}
+        {twit.twits.map((item)=><TweetCard item={item}/>)}
       </section>
     </div>
   );

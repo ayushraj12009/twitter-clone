@@ -20,12 +20,19 @@ function App() {
 
   // },[auth.jwt])
 
+  // useEffect(() => {
+  //   if (jwt) {
+  //     dispatch(getUserProfile(jwt));
+  //     navigate("/")
+  //   }
+  // }, [auth.jwt, dispatch, jwt, navigate]);
+
   useEffect(() => {
     if (jwt) {
       dispatch(getUserProfile(jwt));
       navigate("/")
     }
-  }, [auth.jwt, dispatch, jwt, navigate]);
+  }, [auth.jwt]);
   
 
   return (
